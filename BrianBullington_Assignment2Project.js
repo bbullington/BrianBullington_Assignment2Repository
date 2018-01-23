@@ -54,6 +54,10 @@ var myApple={name: "apple",color: "red"};
 
 var myBanana={name: "banana", color: "yellow"};
 
+var fruitTray1={myApple, myBanana};
+var fruitTray2={myApple, myBanana};
+var fruitTray3={myApple, myMango};
+
 
 var myMango={name: "banana", color: "yellow", taste:"delicious"};
 
@@ -82,49 +86,62 @@ console.log(Object.keys(myApple).length);
 
 console.log(myApple2.colors==undefined);
 
-console.log("***********")
+console.log("***********");
 
-function deepEqual(elem1, elem2){
-    if(elem1===elem2){
+function deepEqual(elem1, elem2) {
+    if (elem1 === elem2) {                            //true if objects are identical
         return "elements are identical";
     }
-    else if((elem1===null && elem2===null)){    //returns true if objects are identical or if both objects are null
+    else if ((elem1 === null && elem2 === null)) {    //true if both objects are null
         return "nulls are equal enough";
     }
-    else if(elem1===null || elem2===null){     //returns false if one of the objects is null and ends
+    else if (elem1 === null || elem2 === null) {     //returns false exactly 1 object is null
         return "null doesn't equal anything else";
     }
-    else if(typeof elem1 == "object" && typeof elem2=="object"){  //2 objects
-        for (var key in elem1){
-            if (elem2.key==undefined){
-                console.log("found a key in elem1 that wasn't in elem 2");   //quickly checks that every key in elem1 is also in elem 2
-                console.log(key, elem1.key, elem2.key);
-                return;
+    else if (typeof elem1 == "object" && typeof elem2 == "object") {  //2 objects
 
+        for (var key in elem1) {                                        //checks if all keys in elem 1 are also in elem 2
+            if (elem2[key] == undefined) {
+                console.log("found a key in elem1 that wasn't in elem 2");   //quickly checks that every key in elem1 is also in elem 2
+                console.log(key, elem1[key], elem2[key]);
+                return "not the same 1"
             }
         }
-        // for(var key2 in elem2) {
-        //     if (elem1.key2 == undefined) {                            //quickly checks that every key in elem2 is also in elem 1
-        //         console.log("found a key in elem 2 that wasn't in elem 1");
-        //         console.log(key2, elem1.key2, elem2.key2);
-        //         break;
-        //
-        //     }
-        // }
-        return "at least the keys are the same";
-
-    }
-    else {
-        return "guess not, we are at the end;"     //if you have made it here, the objects aren't identical, neither is null, and they both aren't objects.
+        for (var key in elem2) {                                        //checks if all keys in elem 1 are also in elem 2
+            if (elem1[key] == undefined) {
+                console.log("found a key in elem1 that wasn't in elem 2");   //quickly checks that every key in elem1 is also in elem 2
+                console.log(key, elem1[key], elem2[key]);
+                return "not the same 2"
+            }
+        }
+        console.log("checkpoint same keys");
+        for (var key in elem1) {                                        //once we know the keys are the same, we check each element in the key with deepEqual
+            deepEqual(elem1[key], elem2[key]);
+        }
+        return "two objects are equal!!";
     }
 }
 
-// console.log("deepEqual 2 and 2 ", deepEqual(2,2));
-// console.log("deepEqual null and null", deepEqual(null,null));
+console.log("deepEqual 2 and 2 ", deepEqual(2,2));
+console.log("**");
+console.log("deepEqual null and null", deepEqual(null,null));
+console.log("**");
 // console.log("deepEqual null and 2 ", deepEqual(null,2));
 // console.log("deepEqual myLunch and myApple2 ", deepEqual(myLunch, myApple));
 console.log("deepEqual myApple and myApple2 ", deepEqual(myApple2, myApple));
+console.log("**");
 console.log("deepEqual myMango and myApple2 ", deepEqual(myMango, myApple));
+
+console.log("******hlkljkhlkhjl************")
+// for (var x in myApple){
+//     console.log(x);
+//     console.log(myApple[x]);
+
+
+
+
+
+
 
 // console.log(myApple.names);
 //
