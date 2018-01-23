@@ -53,18 +53,23 @@ console.log("\n"+ "\n"+ "************Deep Equal************************");
 var myApple={name: "apple",color: "red"};
 
 var myBanana={name: "banana", color: "yellow"};
-
-var fruitTray1={myApple, myBanana};
-var fruitTray2={myApple, myBanana};
-var fruitTray3={myApple, myMango};
-
-
+var myLunch= myApple;
+var myApple2={color: "red", name: "apple"};
 var myMango={name: "banana", color: "yellow", taste:"delicious"};
 
-var myLunch= myApple;
-// console.log(Object.keys(myLunch).sort());
+var fruitTray1={myApple, myBanana};
+var fruitTray2={myLunch, myBanana};         //note: fruitTray1 and fruitTray2 have identical elements at their deepest level, but when iterating through it is noted that the top level key has different names.
+var fruitTray3={myApple, myMango};
+var fruitTray4={myMango, myApple};
 
-var myApple2={color: "red", name: "apple"};
+console.log(fruitTray1);
+console.log(fruitTray2);
+
+
+
+
+
+
 // console.log(Object.keys(myApple2).sort());
 
 var num1= 1;
@@ -73,81 +78,54 @@ var num2= 2;
 var word1="1";
 var word2="2";
 
-console.log(myLunch.color);
 
-console.log(Object.keys(myApple).length);
-
-// console.log(Object.keys(myApple).sort());
-// console.log(Object.keys(myApple2).sort());
-// console.log(Object.keys(myApple).sort());
-// console.log(Object.keys(myApple2).sort());
-// console.log(Object.keys(myApple).sort()==Object.keys(myApple2).sort());
-// console.log(Object.keys(myApple));
-
-console.log(myApple2.colors==undefined);
 
 console.log("***********");
 
 function deepEqual(elem1, elem2) {
-    if (elem1 === elem2) {                            //true if objects are identical
-        return "elements are identical";
+    if (elem1 === elem2) {                            //true if passed values are identical (or both are null)
+        return true;
     }
-    else if ((elem1 === null && elem2 === null)) {    //true if both objects are null
-        return "nulls are equal enough";
-    }
-    else if (elem1 === null || elem2 === null) {     //returns false exactly 1 object is null
-        return "null doesn't equal anything else";
+    else if (elem1 === null || elem2 === null || typeof elem1 != typeof elem2) {     //returns false exactly 1 object is null
+        return false;
     }
     else if (typeof elem1 == "object" && typeof elem2 == "object") {  //2 objects
 
         for (var key in elem1) {                                        //checks if all keys in elem 1 are also in elem 2
             if (elem2[key] == undefined) {
-                console.log("found a key in elem1 that wasn't in elem 2");   //quickly checks that every key in elem1 is also in elem 2
-                console.log(key, elem1[key], elem2[key]);
-                return "not the same 1"
+                // console.log("found a key in elem1 that wasn't in elem 2");
+                // console.log(key, elem1[key], elem2[key]);
+                return false;
             }
         }
-        for (var key in elem2) {                                        //checks if all keys in elem 1 are also in elem 2
-            if (elem1[key] == undefined) {
-                console.log("found a key in elem1 that wasn't in elem 2");   //quickly checks that every key in elem1 is also in elem 2
-                console.log(key, elem1[key], elem2[key]);
-                return "not the same 2"
+        for (var key in elem2) {
+            if (elem1[key] == undefined) {                              //checks to see if all elem2 keys are also in elem1
+                // console.log("found a key in elem1 that wasn't in elem 2");
+                // console.log(key, elem1[key], elem2[key]);
+                return false;
             }
+            // console.log("time to dive deep with ", elem1[key], elem2[key]);  //test code to check the recursion
+            return deepEqual(elem1[key], elem2[key]);                           //if elem2 key is in elem1, checks to see if the values of those keys is the same using deepEqual. If the values associated with the key are objects, this will get recursively dive in. Any "not equals" will throw their own "false" from inside the recursion
         }
-        console.log("checkpoint same keys");
-        for (var key in elem1) {                                        //once we know the keys are the same, we check each element in the key with deepEqual
-            deepEqual(elem1[key], elem2[key]);
-        }
-        return "two objects are equal!!";
+        return true;                               //2 objects, all the keys are identical, and comparing through never threw a "false"
     }
 }
 
-console.log("deepEqual 2 and 2 ", deepEqual(2,2));
-console.log("**");
-console.log("deepEqual null and null", deepEqual(null,null));
-console.log("**");
-// console.log("deepEqual null and 2 ", deepEqual(null,2));
-// console.log("deepEqual myLunch and myApple2 ", deepEqual(myLunch, myApple));
-console.log("deepEqual myApple and myApple2 ", deepEqual(myApple2, myApple));
-console.log("**");
-console.log("deepEqual myMango and myApple2 ", deepEqual(myMango, myApple));
+console.log("2 and 2: ", deepEqual(2,2));                               //identical numbers
+console.log("null  and 2: ", deepEqual(null,2));                        //null and a number
+console.log("null and null: ", deepEqual(null,null));                   //2 nulls
+console.log("myApple and myApple2: ", deepEqual(myApple2, myApple));    //two objects with identical insides
+console.log("myLunch and myApple2: ", deepEqual(myLunch, myApple));     //two objects that point to the same value
+console.log("myMango and myApple2: ", deepEqual(myMango, myApple));     //two objects with different keys
+console.log("fruitTray1 and fruitTray2: ", deepEqual(fruitTray1, fruitTray2));  //two objects made of two identical objects... but comes back as false because the name of the objects inside are different. (i.e. when it sees the keys "myLunch and "myApple" it treats these as different
+console.log("fruitTray2 and fruitTray3: ", deepEqual(fruitTray2, fruitTray3));  //two objects made of different objects
+console.log("fruitTray3 and fruitTray4: ", deepEqual(fruitTray3, fruitTray4));  //two objects made of different objects
 
-console.log("******hlkljkhlkhjl************")
-// for (var x in myApple){
-//     console.log(x);
-//     console.log(myApple[x]);
-
-
-
-
-
-
-
-// console.log(myApple.names);
-//
-// console.log(Object.keys(myApple).length);
-// console.log(Object.keys(myApple).sort());
-// console.log(Object.keys(myApple2).sort());
-// console.log(Object.keys(myApple).sort()==Object.keys(myApple2).sort());
-
-// console.log("deepEqual two and 2 ", deepEqual("two",2));
+// Your code here.
+var obj = {here: {is: "an"}, object: 2};
+console.log(deepEqual(obj, obj));
+// → true
+console.log(deepEqual(obj, {here: 1, object: 2}));
+// → false
+console.log(deepEqual(obj, {here: {is: "an"}, object: 2}));
+// → true
